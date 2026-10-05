@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculus Formula Quiz</title>
+</head>
+
+<body>
+    <h1>Calculus Formula Quiz</h1>
+
+    <p>What is the derivative of sin(x)?</p>
+
+    <input type="text" id="answer">
+    <button onclick="checkAnswer()">Submit</button>
+
+    <p id="result"></p>
+
+    <script>
+        function checkAnswer() {
+            let answer = document.getElementById("answer").value;
+
+            if (answer.toLowerCase() === "cos(x)") {
+                document.getElementById("result").textContent = "Correct! 🎉";
+            } else {
+                document.getElementById("result").textContent = "Try again!";
+            }
+        }
+    </script>
+</body>
+</html>
