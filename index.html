@@ -1,29 +1,309 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculus Formula Quiz</title>
+    <title>AP Calculus Formula Quiz</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #quiz {
+            margin-top: 30px;
+        }
+
+        .answer-button {
+            display: block;
+            margin: 10px auto;
+            width: 250px;
+        }
+
+        #result {
+            font-size: 20px;
+            margin: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Calculus Formula Quiz</h1>
 
-    <p>What is the derivative of sin(x)?</p>
+    <h1>AP Calculus Formula Quiz</h1>
 
-    <input type="text" id="answer">
-    <button onclick="checkAnswer()">Submit</button>
+    <p>Choose what you want to study:</p>
 
-    <p id="result"></p>
+    <button onclick="startQuiz('unit1')">Unit 1</button>
+    <button onclick="startQuiz('unit2')">Unit 2</button>
+    <button onclick="startQuiz('all')">All Units</button>
+
+    <div id="quiz"></div>
 
     <script>
-        function checkAnswer() {
-            let answer = document.getElementById("answer").value;
 
-            if (answer.toLowerCase() === "cos(x)") {
-                document.getElementById("result").textContent = "Correct! 🎉";
+        const formulaSets = {
+
+            unit1: [
+                {
+                    question: "What does it mean for a function to be continuous at x = a?",
+                    choices: [
+                        "The limit exists and equals f(a)",
+                        "The derivative equals zero",
+                        "The function must be increasing",
+                        "The function must equal zero"
+                    ],
+                    answer: "The limit exists and equals f(a)"
+                }
+            ],
+
+            unit2: [
+                {
+                    question: "What is the derivative of sin(x)?",
+                    choices: [
+                        "cos(x)",
+                        "-cos(x)",
+                        "sin(x)",
+                        "-sin(x)"
+                    ],
+                    answer: "cos(x)"
+                },
+
+                {
+                    question: "What is the derivative of cos(x)?",
+                    choices: [
+                        "sin(x)",
+                        "-sin(x)",
+                        "cos(x)",
+                        "-cos(x)"
+                    ],
+                    answer: "-sin(x)"
+                },
+
+                {
+                    question: "What is the derivative of tan(x)?",
+                    choices: [
+                        "sec²(x)",
+                        "csc²(x)",
+                        "sec(x)tan(x)",
+                        "-csc²(x)"
+                    ],
+                    answer: "sec²(x)"
+                },
+
+                {
+                    question: "What is the derivative of cot(x)?",
+                    choices: [
+                        "csc²(x)",
+                        "-csc²(x)",
+                        "sec²(x)",
+                        "-sec²(x)"
+                    ],
+                    answer: "-csc²(x)"
+                },
+
+                {
+                    question: "What is the derivative of sec(x)?",
+                    choices: [
+                        "sec(x)tan(x)",
+                        "sec²(x)",
+                        "csc(x)cot(x)",
+                        "-sec(x)tan(x)"
+                    ],
+                    answer: "sec(x)tan(x)"
+                },
+
+                {
+                    question: "What is the derivative of csc(x)?",
+                    choices: [
+                        "csc(x)cot(x)",
+                        "-csc(x)cot(x)",
+                        "sec(x)tan(x)",
+                        "-sec(x)tan(x)"
+                    ],
+                    answer: "-csc(x)cot(x)"
+                },
+
+                {
+                    question: "What is the derivative of xⁿ?",
+                    choices: [
+                        "nxⁿ⁻¹",
+                        "xⁿ⁻¹",
+                        "nxⁿ",
+                        "xⁿ"
+                    ],
+                    answer: "nxⁿ⁻¹"
+                },
+
+                {
+                    question: "What is the derivative of a constant?",
+                    choices: [
+                        "1",
+                        "x",
+                        "0",
+                        "The constant"
+                    ],
+                    answer: "0"
+                },
+
+                {
+                    question: "What is the derivative of eˣ?",
+                    choices: [
+                        "x·eˣ",
+                        "eˣ",
+                        "ln(x)",
+                        "1/x"
+                    ],
+                    answer: "eˣ"
+                },
+
+                {
+                    question: "What is the derivative of ln(x)?",
+                    choices: [
+                        "ln(x)",
+                        "x",
+                        "1/x",
+                        "eˣ"
+                    ],
+                    answer: "1/x"
+                },
+
+                {
+                    question: "What is the derivative of f(x) + g(x)?",
+                    choices: [
+                        "f'(x) + g'(x)",
+                        "f'(x)g'(x)",
+                        "f(x) + g(x)",
+                        "f'(x) - g'(x)"
+                    ],
+                    answer: "f'(x) + g'(x)"
+                },
+
+                {
+                    question: "What is the derivative of f(x)g(x)?",
+                    choices: [
+                        "f'(x)g'(x)",
+                        "f'(x)g(x) + f(x)g'(x)",
+                        "f(x)g(x)",
+                        "f'(x) + g'(x)"
+                    ],
+                    answer: "f'(x)g(x) + f(x)g'(x)"
+                },
+
+                {
+                    question: "What is the derivative of f(x) / g(x)?",
+                    choices: [
+                        "(f'g + fg') / g²",
+                        "(f'g - fg') / g²",
+                        "f'/g'",
+                        "f'g"
+                    ],
+                    answer: "(f'g - fg') / g²"
+                }
+            ]
+        };
+
+
+        let currentQuestions = [];
+        let currentQuestion = 0;
+        let score = 0;
+
+
+        function startQuiz(unit) {
+
+            if (unit === "all") {
+                currentQuestions = [
+                    ...formulaSets.unit1,
+                    ...formulaSets.unit2
+                ];
             } else {
-                document.getElementById("result").textContent = "Try again!";
+                currentQuestions = [...formulaSets[unit]];
             }
+
+            // Randomize question order
+            currentQuestions.sort(() => Math.random() - 0.5);
+
+            currentQuestion = 0;
+            score = 0;
+
+            showQuestion();
         }
+
+
+        function showQuestion() {
+
+            const quiz = document.getElementById("quiz");
+
+            if (currentQuestion >= currentQuestions.length) {
+
+                quiz.innerHTML = `
+                    <h2>Quiz Complete! 🎉</h2>
+                    <p>You scored ${score} out of ${currentQuestions.length}.</p>
+                    <button onclick="location.reload()">Choose Another Quiz</button>
+                `;
+
+                return;
+            }
+
+            const question = currentQuestions[currentQuestion];
+
+            quiz.innerHTML = `
+                <h2>Question ${currentQuestion + 1} of ${currentQuestions.length}</h2>
+
+                <p>${question.question}</p>
+
+                ${question.choices.map(choice => `
+                    <button class="answer-button"
+                            onclick="checkAnswer('${choice.replace(/'/g, "\\'")}')">
+                        ${choice}
+                    </button>
+                `).join("")}
+
+                <p id="result"></p>
+            `;
+        }
+
+
+        function checkAnswer(selectedAnswer) {
+
+            const question = currentQuestions[currentQuestion];
+            const result = document.getElementById("result");
+
+            if (selectedAnswer === question.answer) {
+
+                result.textContent = "Correct! 🎉";
+                score++;
+
+            } else {
+
+                result.textContent = "Not quite! The correct answer is: " + question.answer;
+            }
+
+            // Disable all answer buttons
+            const buttons = document.querySelectorAll(".answer-button");
+
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+
+            // Add next button
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "Next Question";
+            nextButton.onclick = function() {
+                currentQuestion++;
+                showQuestion();
+            };
+
+            document.getElementById("quiz").appendChild(nextButton);
+        }
+
     </script>
+
 </body>
 </html>
